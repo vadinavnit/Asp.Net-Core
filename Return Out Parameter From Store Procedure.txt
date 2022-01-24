@@ -1,0 +1,21 @@
+using Microsoft.Data.SqlClient;
+
+
+public List<VisibilityPermissionsResponse> GetCompanyDocumentVisiblity(long tenantId, long categoryId)
+ {
+            var sqlParameterOut = new SqlParameter
+            {
+                ParameterName = "@Result",
+                DbType = DbType.String,
+                Size = 30,
+                Direction = ParameterDirection.Output
+            };
+            var list = _context.DocumentsVisibility.FromSqlRaw("EXEC [dbo].[proc_Get_Company_Documents_Visibility] {0}, {1}, {2} OUT", tenantId, categoryId, sqlParameterOut).ToList();
+            var result = sqlParameterOut.Value;
+
+            return list;
+}
+
+// Get only Out Parameter
+var outparm= _context.Database.ExecuteSqlRaw("EXEC [dbo].[proc_Test_OUT] {0} OUT", sqlParameterOut);
+var result = sqlParameterOut.Value;
